@@ -9,7 +9,7 @@ except ModuleNotFoundError:
 except ImportError:
     excepted=True
 if excepted:
-    print("Required Module - prettytable not satisfied.\nInstall with 'python -m pip install prettytable'")
+    print("Required Package - prettytable not installed.\nInstall with 'python -m pip install prettytable'")
     input("Press Any Key To Exit.")
     exit()
 
@@ -33,15 +33,19 @@ def map_maker(size, player, treasure):
             else:
                 curr_line.append("-")
         map.append(curr_line)
-    return map
+
+    pt = PrettyTable()
+    for row in map:pt.add_row(row)
+    return pt.get_string(header=False)
 
 
 def help():
-    help_list = ['HELP','', 'P is You', 'X is The Treasure', '', 'Controls','Move with W A S D.', 'W - Go Up', 'A - Go Left', 'S - Go Down', 'D - Go Right', 'Have Fun!']
-    help_list = [f"│{f'{line}':<{len(max(help_list, key=len))}}│" for line in help_list]
-    print(f"┏{'':━<18}┓")
+    help_list = ['HELP','', 'P is You', 'X is The Treasure', '', 'Controls','Move with W A S D.','W - Go Up', 'A - Go Left', 'S - Go Down', 'D - Go Right', 'You can stack it too!','Ex:wwdd would move up and right 2 times','','Have Fun!']
+    max_len = len(max(help_list, key=len))
+    help_list = [f"│{f'{line}':<{max_len}}│" for line in help_list]
+    print(f"┏{'':━<{max_len}}┓")
     for line in help_list:print(line)
-    print(f"┗{'':━<18}┛\n")
+    print(f"┗{'':━<{max_len}}┛\n")
 
 
 print("Welcome To The Treasure Seeking Game!\nIn this game your goal is to go to the X marked location. Good Luck Adventurer!\n\n")
@@ -50,10 +54,8 @@ print("Welcome To The Treasure Seeking Game!\nIn this game your goal is to go to
 
 while True:
     # Getting the current map and print it with PrettyTable
-    table = map_maker(size, player, treasure)
-    pt = PrettyTable()
-    for row in table:pt.add_row(row)
-    print(pt.get_string(header=False))
+    print(map_maker(size, player, treasure))
+    
     
     #Check if player get the treasure, if true, congratulate player and exits
     if player == treasure:
@@ -66,17 +68,18 @@ while True:
         exit()
     
     # Asking player input and work with it.
-    direction = input("\nDirection(type help for help):").upper()
-    if direction == "D" and player[1] != size[1]:
-        player[1]+=1
-    elif direction == "S" and player[0] != size[0]:
-        player[0]+=1
-    elif direction == "A" and player[1] != 0:
-        player[1]-=1
-    elif direction == "W" and player[0] != 0:
-        player[0]-=1
-    elif direction in ['HELP', 'H', 'DIRECTION', 'DIRECTIONS', 'DIR']:
-        help()
-    else:
-        print("Invalid Action.\n\n\n")
+    directions = input("\nDirection(type h for help):").upper()
+    for direction in directions:
+        if direction == "D" and player[1] != size[1]:
+            player[1]+=1
+        elif direction == "S" and player[0] != size[0]:
+            player[0]+=1
+        elif direction == "A" and player[1] != 0:
+            player[1]-=1
+        elif direction == "W" and player[0] != 0:
+            player[0]-=1
+        elif direction in ['HELP', 'H', 'DIRECTION', 'DIRECTIONS', 'DIR']:
+            help()
+        else:
+            print("Invalid Action.\n\n\n")
     
